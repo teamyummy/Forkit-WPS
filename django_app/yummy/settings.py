@@ -38,7 +38,7 @@ else:
 
 
 ALLOWED_HOSTS = [
-        'yummy.crjf8mg5xpbv.ap-northeast-2.rds.amazonaws.com',
+        'yummy-dev.ap-northeast-2.elasticbeanstalk.com/'
         ]
 
 
