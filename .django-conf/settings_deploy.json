@@ -15,7 +15,7 @@
 	"email": "hunter871428@gmail.com",
     "password": "yummy1234"
 },
-  
+
 "aws": {
     "AWS_STORAGE_BUCKET_NAME": "bucket_yummy",
     "AWS_ACCESS_KEY_ID": "AKIAITQJCIRO3YN762SQ",
