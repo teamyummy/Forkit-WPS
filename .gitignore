@@ -1,4 +1,4 @@
-.django-conf
+.django-conf/
 static_root/
 
 # project custom

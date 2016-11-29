@@ -11,9 +11,20 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import sys
+import json
+
+DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+CONF_DIR = os.path.join(BASE_DIR, '../.django-conf')
+
+if DEBUG:
+    config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
+else:
+    config = json.loads(open(os.path.join(CONF_DIR, 'settings_deploy.json')).read())
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,8 +33,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i(a_w0eu-8!!)#4@c0dk!ib^lnr4zx3eszf6l!#pgw7lin@+3s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = []
 
