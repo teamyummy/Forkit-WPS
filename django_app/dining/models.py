@@ -36,10 +36,15 @@ class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant)
     title = models.CharField(max_length=100)
     content = models.TextField()
-    review_score = models.IntegerField()
-    review_like = models.IntegerField()
-    review_dislike = models.IntegerField()
+    score = models.IntegerField()
+    like = models.IntegerField()
+    dislike = models.IntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
+
+
+class Restaurant_tag(models.Model):
+    restaurant = models.ForeignKey(Restaurant)
+    name = models.CharField(max_length=20)
 
 
 class Restaurant_favor(models.Model):
