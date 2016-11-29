@@ -39,6 +39,7 @@ else:
 
 ALLOWED_HOSTS = [
         'yummy-dev.ap-northeast-2.elasticbeanstalk.com',
+        '.mangoplates.com',
         ]
 
 
