@@ -37,7 +37,9 @@ else:
     config = json.loads(open(os.path.join(CONF_DIR, 'settings_deploy.json')).read())
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+        'yummy.crjf8mg5xpbv.ap-northeast-2.rds.amazonaws.com',
+        ]
 
 
 # Application definition
