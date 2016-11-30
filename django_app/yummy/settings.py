@@ -29,7 +29,8 @@ STATIC_S3 = True
 SECRET_KEY = 'i(a_w0eu-8!!)#4@c0dk!ib^lnr4zx3eszf6l!#pgw7lin@+3s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+#DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+DEBUG = True
 
 if DEBUG:
     config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
     'storages',
     'member',
     'dining',
