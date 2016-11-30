@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'member',
     'dining',
     'storages',
+    'rest_framework',
+    'snippets.apps.SnippetsConfig',
 ]
 
 MIDDLEWARE = [
