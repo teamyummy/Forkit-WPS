@@ -1,7 +1,27 @@
 from rest_framework import serializers
-from .models import Restaurant, Menu, Review
+from .models import Restaurant, Menu, Review, RestaurantImg
+
+
+class MenuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = ('id', 'restaurant',
+                  'name', 'price', 'description', 'img')
+
+
+class RestaurantImgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantImg
+        fields = ('id', 'restaurant', 'img', 'alt')
+
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    register = serializers.ReadOnlyField(source='register.username')
+#    menus = serializers.PrimaryKeyRelatedField(
+#                    many=True, queryset=Menu.objects.all())
+    menus = MenuSerializer(many=True, read_only=True)
+    images = RestaurantImgSerializer(many=True, read_only=True)
+
     class Meta:
         model = Restaurant
         fields = ('id', 'register',
@@ -10,11 +30,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
                   'can_parking', 'desc_parking', 'desc_delivery',
                   'operation_hour',
                   'review_count', 'review_score',
-                  'total_like', 'created_date')
+                  'total_like', 'created_date', 'menus', 'images')
 
-class MenuSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Menu
-        fields = ('id', 'restaurant',
-                  'name', 'price', 'description', 'img')
 

@@ -4,7 +4,7 @@ from versatileimagefield.fields import VersatileImageField
 
 
 class Restaurant(models.Model):
-    register = models.ForeignKey(settings.AUTH_USER_MODEL)
+    register = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='restaurants')
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=50)
@@ -22,9 +22,12 @@ class Restaurant(models.Model):
     total_like = models.IntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Menu(models.Model):
-    restaurant = models.ForeignKey(Restaurant)
+    restaurant = models.ForeignKey(Restaurant, related_name='menus')
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     description = models.TextField()
@@ -42,31 +45,31 @@ class Review(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 
-class Restaurant_tag(models.Model):
+class RestaurantTag(models.Model):
     restaurant = models.ForeignKey(Restaurant)
     name = models.CharField(max_length=20)
 
 
-class Restaurant_favor(models.Model):
+class RestaurantFavor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     restaurant = models.ForeignKey(Restaurant)
     created_date = models.DateTimeField(auto_now_add=True)
 
 
-class Restaurant_img(models.Model):
-    restaurant = models.ForeignKey(Restaurant)
+class RestaurantImg(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='images')
     img = VersatileImageField('RestaurantImage', upload_to='restaurant_imgs')
     alt = models.CharField(max_length=100)
 
 
-class Review_like(models.Model):
+class ReviewLike(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     review = models.ForeignKey(Review)
     up_and_down = models.IntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
     
 
-class Review_img(models.Model):
+class ReviewImg(models.Model):
     review = models.ForeignKey(Review)
     img = VersatileImageField('ReviewImage', upload_to='review_imgs')
     alt = models.CharField(max_length=100)
