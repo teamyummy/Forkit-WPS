@@ -14,15 +14,17 @@ import os
 import sys
 import json
 
-DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+# DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+
+DEBUG = True
+# STATIC_S3 = True
+STATIC_S3 = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 CONF_DIR = os.path.join(BASE_DIR, '../.django-conf')
 STATIC_ROOT = os.path.join(ROOT_DIR, 'static_root')
-
-STATIC_S3 = True
 
 if DEBUG:
     config = json.loads(open(os.path.join(CONF_DIR, 'settings_debug.json')).read())
@@ -38,7 +40,10 @@ SECRET_KEY = 'i(a_w0eu-8!!)#4@c0dk!ib^lnr4zx3eszf6l!#pgw7lin@+3s'
 
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.mangoplates.com',
+    '.localhost',
+]
 
 
 # Application definition
@@ -50,12 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'versatileimagefield',
 
     'member',
     'dining',
     'storages',
     'rest_framework',
-    'snippets.apps.SnippetsConfig',
 ]
 
 MIDDLEWARE = [

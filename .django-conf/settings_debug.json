@@ -1,3 +1,7 @@
 {
-
+  "aws": {
+    "AWS_STORAGE_BUCKET_NAME": "bucket_yummy",
+    "AWS_ACCESS_KEY_ID": "AKIAITQJCIRO3YN762SQ",
+    "AWS_SECRET_ACCESS_KEY": "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"
+  }
 }
