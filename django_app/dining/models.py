@@ -13,13 +13,13 @@ class Restaurant(models.Model):
     description = models.TextField()
 
     can_parking = models.BooleanField()
-    desc_parking = models.CharField(max_length=100)
-    desc_delivery = models.CharField(max_length=100)
-    operation_hour = models.CharField(max_length=100)
+    desc_parking = models.CharField(max_length=100, blank=True)
+    desc_delivery = models.CharField(max_length=100, blank=True)
+    operation_hour = models.CharField(max_length=100, blank=True)
 
-    review_count = models.IntegerField()
-    review_score = models.FloatField()
-    total_like = models.IntegerField()
+    review_count = models.IntegerField(default=0)
+    review_score = models.IntegerField(default=0)
+    total_like = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

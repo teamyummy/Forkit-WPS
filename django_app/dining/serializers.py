@@ -3,6 +3,9 @@ from .models import Restaurant, Menu, Review, RestaurantImg
 
 
 class MenuSerializer(serializers.ModelSerializer):
+    restaurant = serializers.ReadOnlyField(source='restaurant.name')
+    #img_t = serializers.ReadOnlyField(source="img.thumbnail['200x200'].url")
+
     class Meta:
         model = Menu
         fields = ('id', 'restaurant',

@@ -25,9 +25,14 @@ class MenuList(generics.ListCreateAPIView):
     serializer_class = MenuSerializer
 
     def get_queryset(self):
-        pk = self.kwargs['pk']
-        restaurant = get_object_or_404(Restaurant, pk=pk)
+        rest_id = self.kwargs['rest_id']
+        restaurant = get_object_or_404(Restaurant, pk=rest_id)
         return Menu.objects.filter(restaurant=restaurant)
+
+    def perform_create(self, serializer):
+        rest_id = self.kwargs['rest_id']
+        restaurant = get_object_or_404(Restaurant, pk=rest_id)
+        serializer.save(restaurant=restaurant)
 
 #    def list(self, request, *args, **kwargs):
 #        pk = kwargs['pk']
@@ -40,4 +45,8 @@ class MenuDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
 
+    def get_queryset(self):
+        rest_id = self.kwargs['rest_id']
+        restaurant = get_object_or_404(Restaurant, pk=rest_id)
+        return Menu.objects.filter(restaurant=restaurant)
 
