@@ -20,7 +20,7 @@ class MenuSerializer(serializers.ModelSerializer):
         if request is not None:
             ret['img_t'] = request.build_absolute_url(img_t)
             ret['img_s'] = request.build_absolute_url(img_s)
-        
+        return
 
 
 class RestaurantImgSerializer(serializers.ModelSerializer):
