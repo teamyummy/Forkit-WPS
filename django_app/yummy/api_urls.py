@@ -16,6 +16,33 @@ urlpatterns = [
     url(r'^v1/restaurants/(?P<rest_id>\d+)/menus/(?P<pk>\d+)/$',
         d_apis.MenuDetail.as_view(), name='menu-detail'),
 
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/images/$',
+        d_apis.RestaurantImgList.as_view(), name='rest-img-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/images/(?P<pk>\d+)/$',
+        d_apis.RestaurantImgDetail.as_view(), name='rest-img-detail'),
+
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/$',
+        d_apis.ReviewList.as_view(), name='rest-review-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<pk>\d+)/$',
+        d_apis.ReviewDetail.as_view(), name='rest-review-detail'),
+
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/tags/$',
+        d_apis.TagList.as_view(), name='rest-tag-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/tags/(?P<pk>\d+)/$',
+        d_apis.TagDetail.as_view(), name='rest-tag-detail'),
+
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/favors/$',
+        d_apis.FavorList.as_view(), name='rest-favor-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/favors/(?P<pk>\d+)/$',
+        d_apis.FavorDetail.as_view(), name='rest-favor-detail'),
+
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/images/$',
+        d_apis.ReviewImgList.as_view(), name='review-img-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/images/(?P<pk>\d+)/$',
+        d_apis.ReviewImgDetail.as_view(), name='review-img-detail'),
+
+
+
 #    url(r'^v1/menus/$', d_apis.MenuList.as_view(), name='menu-list'),
 #    url(r'^v1/menus/(?P<pk>\d+)/$', d_apis.MenuDetail.as_view(), name='menu-detail'),
 

@@ -36,24 +36,30 @@ class Menu(models.Model):
 
 class Review(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
-    restaurant = models.ForeignKey(Restaurant)
+    restaurant = models.ForeignKey(Restaurant, related_name='reviews')
     title = models.CharField(max_length=100)
     content = models.TextField()
     score = models.IntegerField()
-    like = models.IntegerField()
-    dislike = models.IntegerField()
+    like = models.IntegerField(default=0)
+    dislike = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
 
 class RestaurantTag(models.Model):
-    restaurant = models.ForeignKey(Restaurant)
+    restaurant = models.ForeignKey(Restaurant, related_name='tags')
     name = models.CharField(max_length=20)
+
+    class Meta:
+        unique_together = ("restaurant", "name")
 
 
 class RestaurantFavor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     restaurant = models.ForeignKey(Restaurant)
     created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "restaurant")
 
 
 class RestaurantImg(models.Model):
@@ -70,7 +76,7 @@ class ReviewLike(models.Model):
     
 
 class ReviewImg(models.Model):
-    review = models.ForeignKey(Review)
+    review = models.ForeignKey(Review, related_name='images')
     img = VersatileImageField('ReviewImage', upload_to='review_imgs')
     alt = models.CharField(max_length=100)
 
