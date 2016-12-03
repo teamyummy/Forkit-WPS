@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from .models import Restaurant, Menu, Review
 from .models import RestaurantImg, RestaurantTag, ReviewImg
 from .models import RestaurantFavor
@@ -67,6 +68,7 @@ class TagSerializer(serializers.ModelSerializer):
         model = RestaurantTag
         fields = ('id', 'restaurant', 'name')
 
+    #def validate(self, data)
 
 class FavorSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -75,6 +77,26 @@ class FavorSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestaurantFavor
         fields = ('id', 'user', 'restaurant', 'created_date')
+#        validators = [
+#            UniqueTogetherValidator(
+#                queryset=RestaurantFavor.objects.all(),
+#                fields=('user', 'restaurant')
+#            )
+#        ]
+
+    def validate(self, data):
+        print('begin validate')
+
+        request = self.context['request']
+        view = self.context['view']
+
+        user = request.user
+        rest_id = view.kwargs['rest_id']
+
+        if RestaurantFavor.objects.filter(user=user, restaurant=rest_id).exists():
+            raise serializers.ValidationError("Favor(user,restaurant) already exists")
+
+        return data
 
 
 class RestaurantSerializer(serializers.ModelSerializer):

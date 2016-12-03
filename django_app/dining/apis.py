@@ -149,7 +149,7 @@ class FavorList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         rest_id = self.kwargs['rest_id']
         restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        serializer.save(author=self.request.user, restaurant=restaurant)
+        serializer.save(user=self.request.user, restaurant=restaurant)
         restaurant.total_like += 1
         restaurant.save()
 
