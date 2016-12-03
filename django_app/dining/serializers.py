@@ -68,7 +68,16 @@ class TagSerializer(serializers.ModelSerializer):
         model = RestaurantTag
         fields = ('id', 'restaurant', 'name')
 
-    #def validate(self, data)
+    def validate(self, data):
+        view = self.context['view']
+        rest_id = view.kwargs['rest_id']
+        name = data['name']
+
+        if RestaurantTag.objects.filter(restaurant=rest_id, name=name).exists():
+            raise serializers.ValidationError(
+                    "Tag(restaurant,name[{}]) already exists".format(name))
+
+        return data
 
 class FavorSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -85,7 +94,7 @@ class FavorSerializer(serializers.ModelSerializer):
 #        ]
 
     def validate(self, data):
-        print('begin validate')
+        #print('begin validate')
 
         request = self.context['request']
         view = self.context['view']
