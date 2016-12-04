@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from .models import Restaurant, Menu, Review
-from .models import RestaurantImg, RestaurantTag, ReviewImg
-from .models import RestaurantFavor
+from .models import RestaurantImg, RestaurantTag, RestaurantFavor
+from .models import ReviewImg, ReviewLike
 
 
 class ImageThumbMixin(object):
@@ -48,6 +48,15 @@ class ReviewImgSerializer(ImageThumbMixin, serializers.ModelSerializer):
     class Meta:
         model = ReviewImg
         fields = ('id', 'review', 'img', 'alt')
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    review = serializers.ReadOnlyField(source='review.title')
+
+    class Meta:
+        model = ReviewLike
+        fields = ('id', 'user', 'review', 'up_and_down', 'created_date')
 
 
 class ReviewSerializer(serializers.ModelSerializer):

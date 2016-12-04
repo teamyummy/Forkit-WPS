@@ -41,6 +41,10 @@ urlpatterns = [
     url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/images/(?P<pk>\d+)/$',
         d_apis.ReviewImgDetail.as_view(), name='review-img-detail'),
 
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/likes/$',
+        d_apis.LikeList.as_view(), name='review-like-list'),
+    url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/likes/(?P<pk>\d+)/$',
+        d_apis.LikeDetail.as_view(), name='review-like-detail'),
 
 
 #    url(r'^v1/menus/$', d_apis.MenuList.as_view(), name='menu-list'),

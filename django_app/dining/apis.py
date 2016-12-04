@@ -1,20 +1,21 @@
 from .models import Restaurant, Menu, Review
 from .models import RestaurantImg, RestaurantTag, ReviewImg
-from .models import RestaurantFavor
+from .models import RestaurantFavor, ReviewLike
 from .serializers import RestaurantSerializer, MenuSerializer
 from .serializers import RestaurantImgSerializer
 from .serializers import ReviewSerializer, TagSerializer
 from .serializers import FavorSerializer
 from .serializers import ReviewImgSerializer
+from .serializers import LikeSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from rest_framework import permissions
-
+from rest_framework.serializers import ValidationError
+from .perms import IsOwnerOrReadOnly
 
 class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
@@ -23,12 +24,13 @@ class RestaurantList(generics.ListCreateAPIView):
 class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly, )
 
 
 class MenuList(generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -50,6 +52,7 @@ class MenuList(generics.ListCreateAPIView):
 class MenuDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -60,6 +63,7 @@ class MenuDetail(generics.RetrieveUpdateDestroyAPIView):
 class RestaurantImgList(generics.ListCreateAPIView):
     queryset = RestaurantImg.objects.all()
     serializer_class = RestaurantImgSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -75,6 +79,7 @@ class RestaurantImgList(generics.ListCreateAPIView):
 class RestaurantImgDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RestaurantImg.objects.all()
     serializer_class = RestaurantImgSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -85,7 +90,7 @@ class RestaurantImgDetail(generics.RetrieveUpdateDestroyAPIView):
 class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -104,7 +109,7 @@ class ReviewList(generics.ListCreateAPIView):
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -115,6 +120,7 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
 class TagList(generics.ListCreateAPIView):
     queryset = RestaurantTag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -130,6 +136,7 @@ class TagList(generics.ListCreateAPIView):
 class TagDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RestaurantTag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -140,6 +147,7 @@ class TagDetail(generics.RetrieveUpdateDestroyAPIView):
 class FavorList(generics.ListCreateAPIView):
     queryset = RestaurantFavor.objects.all()
     serializer_class = FavorSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
@@ -157,12 +165,14 @@ class FavorList(generics.ListCreateAPIView):
 class FavorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RestaurantFavor.objects.all()
     serializer_class = FavorSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
 
 
 class ReviewImgList(generics.ListCreateAPIView):
     queryset = ReviewImg.objects.all()
     serializer_class = ReviewImgSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         review_id = self.kwargs['review_id']
@@ -178,10 +188,80 @@ class ReviewImgList(generics.ListCreateAPIView):
 class ReviewImgDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ReviewImg.objects.all()
     serializer_class = ReviewImgSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
 
     def get_queryset(self):
         review_id = self.kwargs['review_id']
         review = get_object_or_404(Review, pk=review_id)
         return ReviewImg.objects.filter(review=review)
+
+
+class LikeList(generics.ListCreateAPIView):
+    queryset = ReviewLike.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
+
+    def get_queryset(self):
+        review_id = self.kwargs['review_id']
+        review = get_object_or_404(Review, pk=review_id)
+        return ReviewLike.objects.filter(review=review)
+        
+    def perform_create(self, serializer):
+        review_id = self.kwargs['review_id']
+        review = get_object_or_404(Review, pk=review_id)
+        user = self.request.user
+
+        if ReviewLike.objects.filter(user=user, review=review).exists():
+            raise ValidationError( { "non_field_errors":
+                    "[ Like(user[{}],review[{}]) already exists ]"
+                    .format(user.username, review.title) })
+
+        like = serializer.save(user=user, review=review)
+        if like.up_and_down > 0:
+            review.like += like.up_and_down
+        else:
+            review.dislike += -like.up_and_down
+        
+        review.save()
+
+
+class LikeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ReviewLike.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = (IsOwnerOrReadOnly, )
+
+    def get_queryset(self):
+        review_id = self.kwargs['review_id']
+        self.review = get_object_or_404(Review, pk=review_id)
+        return ReviewLike.objects.filter(review=self.review)
+
+    def perform_update(self, serializer):
+        org_score = serializer.instance.up_and_down
+        new_score = serializer.validated_data['up_and_down']
+        
+        if org_score == new_score:
+            return
+
+        if org_score > 0:
+            self.review.like -= org_score
+        else:
+            self.review.dislike += org_score
+
+        if new_score > 0:
+            self.review.like += new_score
+        else:
+            self.review.dislike += -new_score
+
+        serializer.save()
+        self.review.save()
+        
+    def perform_destroy(self, instance):
+        if instance.up_and_down > 0:
+            self.review.like -= instance.up_and_down
+        else:
+            self.review.dislike += instance.up_and_down
+
+        instance.delete()
+        self.review.save()
 
 
