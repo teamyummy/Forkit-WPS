@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^', include('yummy.view_urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('yummy.api_urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
