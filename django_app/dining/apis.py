@@ -113,9 +113,30 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         rest_id = self.kwargs['rest_id']
-        restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        return Review.objects.filter(restaurant=restaurant)
+        self.restaurant = get_object_or_404(Restaurant, pk=rest_id)
+        return Review.objects.filter(restaurant=self.restaurant)
 
+    def perform_update(self, serializer):
+        org_score = serializer.instance.score
+        new_score = serializer.validated_data['score']
+        
+        if org_score == new_score:
+            serializer.save()
+            return
+
+        self.restaurant.review_score -= org_score
+        self.restaurant.review_score += new_score
+
+        serializer.save()
+        self.restaurant.save()
+
+    def perform_destroy(self, instance):
+        self.restaurant.review_count -= 1
+        self.restaurant.review_score -= instance.score
+
+        instance.delete()
+        self.review.save()
+    
 
 class TagList(generics.ListCreateAPIView):
     queryset = RestaurantTag.objects.all()
@@ -162,11 +183,21 @@ class FavorList(generics.ListCreateAPIView):
         restaurant.save()
 
 
-class FavorDetail(generics.RetrieveUpdateDestroyAPIView):
+class FavorDetail(generics.RetrieveDestroyAPIView):
     queryset = RestaurantFavor.objects.all()
     serializer_class = FavorSerializer
     permission_classes = (IsOwnerOrReadOnly, )
 
+    def get_queryset(self):
+        rest_id = self.kwargs['rest_id']
+        self.restaurant = get_object_or_404(Restaurant, pk=rest_id)
+        return RestaurantFavor.objects.filter(restaurant=self.restaurant)
+
+    def perform_destroy(self, instance):
+        self.restaurant.total_like -= 1
+
+        instance.delete()
+        self.restaurant.save()
 
 
 class ReviewImgList(generics.ListCreateAPIView):
