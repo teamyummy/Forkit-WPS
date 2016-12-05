@@ -1,5 +1,26 @@
 from rest_framework import serializers
-from .models import Restaurant, Menu, Review, RestaurantImg
+from .models import Restaurant, Menu, Review
+from .models import RestaurantImg, ReviewImg, RestaurantTag
+from .models import RestaurantFavor
+
+
+class ImageThumbMisin(object):
+
+    def to_representation(self, obj):
+        ret = super().to_representation(obj)
+
+        if not hasattr(obj, 'img'):
+            return ret
+
+        img_t = obj.img.thumbnail['200x10000'].url
+        img_s = obj.img.thumbnail['400x10000'].url
+
+        request = self.context.get('request', None)
+        if request is not None:
+            ret['img_t'] = request.build_absolute_uri(img_t)
+            ret['img_s'] = request.build_absolute_uri(img_s)
+
+        return ret
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -10,29 +31,55 @@ class MenuSerializer(serializers.ModelSerializer):
         model = Menu
         fields = ('id', 'restaurant', 'name', 'price', 'description', 'img')
 
-    def to_representation(self, obj):
-        ret = super().to_representation(obj)
-
-        img_t = obj.img.thumbnail['200x10000'].url
-        img_s = obj.img.thumbnail['400x10000'].url
-
-        request = self.context.get('request', None)
-        if request is not None:
-            ret['img_t'] = request.build_absolute_url(img_t)
-            ret['img_s'] = request.build_absolute_url(img_s)
-        return
-
 
 class RestaurantImgSerializer(serializers.ModelSerializer):
+    restaurant = serializers.ReadOnlyField(source='restaurant.name')
+
     class Meta:
         model = RestaurantImg
-        field = ('id', 'restaurant', 'img', 'alt')
+        fields = ('id', 'restaurant', 'img', 'alt')
+
+
+class ReviewImgSerializer(serializers.ModelSerializer):
+    restaurant = serializers.ReadOnlyField(source='restaurant.name')
+
+    class Meta:
+        model = ReviewImg
+        fields = ('id', 'review', 'img', 'alt')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+    restaurant = serializers.ReadOnlyField(source='restaurant.username')
+
+    class Meta:
+        model = Review
+        fields = ('id', 'author', 'restaurant', 'title',
+                 'content', 'score', 'like', 'dislike', 'created_date', 'images')
+
+
+class TagSerializer(serializers.ModelSerializer):
+    restaurant = serializers.ReadOnlyField(source='restaurant.name')
+
+    class Meta:
+        model = RestaurantTag
+        fields = ('id', 'restaurant', 'name')
+
+
+class FavorSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    restaurant = serializers.ReadOnlyField(source='restaurant.name')
+
+    class Meta:
+        model = RestaurantFavor
+        fields = ('id', 'user', 'restaurant', 'created_date')
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
     register = serializers.ReadOnlyField(source='register.username')
     menus = MenuSerializer(many=True, read_only=True)
     images = RestaurantImgSerializer(many=True, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Restaurant
@@ -41,4 +88,9 @@ class RestaurantSerializer(serializers.ModelSerializer):
                   'can_parking', 'desc_parking', 'desc_delivery',
                   'operation_hour', 'review_count', 'review_score',
                   'total_like', 'created_date', 'menus', 'images',
+                  'reviews', 'tags',
                   )
+
+
+
+

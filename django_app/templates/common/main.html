@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+  <title>솔직한 리뷰, 믿을 수 있는 평점! 망고플레이츠닷컴</title>
+</head>
+<body class="home_page ng-scope" onunload ng-app="">
+  <div class="menu"></div>
+  <header class="header header-transparent ng-controller="></header>
+  <a`side class="search-keyword-container"></side>
+  <div class="login_loading_area"></div>
+  <div class="black_screen"></div>
+<!-- 본문영역 -->
+<main class="pg-main">
+  <div class="black_screen"></div>
+  <article class="contents main-padding">
+    <header class="main-header" style="background-image: url('django_app/templates/img/background.jpg')"></header>
+      <h1 class="title">"솔직한 리뷰, 믿을 수 있는 평점!"
+        <br>
+        "Mangoplates닷컴 !"
+      </h1>
+      <p class="options">
+        <a href="#">Download app</a>
+        <a href="#">add/Claim restaurant</a>
+        <a href="#">Become a holic</a>
+      </p>
+      <!-- 전체 검색창 -->
+      <fieldset class="main-search">
+        <legend>전체 검색</legend>
+        <label for="main-search" class="search-word">
+          <span class="icon">검색 : </span>
+          <input id="main-search" name="main-search" type="text" ng-model="keyword" placeholder="지역, 식당 또는 음식"
+           autocomplete="off" onclick="common_ga('PG_MAIN', 'CLICK_SEARCH_MAIN')" ng-click="open_search_layer()"
+            ng-keyup="change_keyword($event)" class="ng-pristine ng-untouched ng-valid">
+            <!-- angular? -->
+          <span class="clear-btn">CLEAR</span>
+        </label>
+        <input type="submit" class="btn-search" value="검색" onclick="common_ga(PG_MAIN', 'CLICK_KEYWORD_SEARCH');">
+      </fieldset>
+  </article>
+</main>
+<!-- 하단영역 -->
+</body>
+</html>

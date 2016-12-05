@@ -17,8 +17,8 @@ import json
 # DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
 
 DEBUG = True
-STATIC_S3 = True
-#STATIC_S3 = False
+# STATIC_S3 = True
+STATIC_S3 = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
