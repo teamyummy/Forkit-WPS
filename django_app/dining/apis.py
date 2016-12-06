@@ -7,15 +7,20 @@ from .serializers import ReviewSerializer, TagSerializer
 from .serializers import FavorSerializer
 from .serializers import ReviewImgSerializer
 from .serializers import LikeSerializer
+
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework import filters
 from rest_framework.serializers import ValidationError
 from .perms import IsOwnerOrReadOnly
+
 
 class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = (IsOwnerOrReadOnly, )
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('name', 'address', 'tags__name')
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
