@@ -70,7 +70,7 @@ class RestaurantImg(models.Model):
 
 class ReviewLike(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    review = models.ForeignKey(Review)
+    review = models.ForeignKey(Review, related_name='likes')
     up_and_down = models.IntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
     
