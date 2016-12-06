@@ -7,6 +7,7 @@ User = get_user_model()
 CONF_DIR = settings.CONF_DIR
 config = json.loads(open(os.path.join(CONF_DIR, 'settings_deploy.json')).read())
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         username = config['defaultSuperuser']['username']
