@@ -21,11 +21,11 @@ CONF_DIR = os.path.join(ROOT_DIR, '.django-conf')
 STATIC_ROOT = os.path.join(ROOT_DIR, 'static_root')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
-DEBUG = True
+DEBUG = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
+#DEBUG = True
 
-#STATIC_S3 = True
-STATIC_S3 = False
+STATIC_S3 = True
+#STATIC_S3 = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -63,6 +63,11 @@ INSTALLED_APPS = [
     'member',
     'dining',
 ]
+
+#REST_FRAMEWORK = {
+#    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',
+#                                'django_filters.rest_framework.SearchFilter', ),
+#}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
