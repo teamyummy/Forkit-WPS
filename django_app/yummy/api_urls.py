@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from rest_framework.authtoken import views
 from dining import apis as d_apis
 from member import apis as m_apis
 
@@ -46,6 +47,7 @@ urlpatterns = [
     url(r'^v1/restaurants/(?P<rest_id>\d+)/reviews/(?P<review_id>\d+)/likes/(?P<pk>\d+)/$',
         d_apis.LikeDetail.as_view(), name='review-like-detail'),
 
+    url(r'^v1/token-auth/', views.obtain_auth_token),
 
 #    url(r'^v1/menus/$', d_apis.MenuList.as_view(), name='menu-list'),
 #    url(r'^v1/menus/(?P<pk>\d+)/$', d_apis.MenuDetail.as_view(), name='menu-detail'),
