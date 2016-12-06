@@ -137,4 +137,16 @@ class RestaurantSerializer(serializers.ModelSerializer):
                   'total_like', 'created_date',
                   'menus', 'images', 'reviews', 'tags')
 
+    def to_representation(self, obj):
+        ret = super().to_representation(obj)
+
+        request = self.context.get('request', None)
+
+        ret['my_like'] = False
+        if request is not None:
+            if request.user.is_authenticated:
+                if obj.favors.filter(user=request.user).exists():
+                    ret['my_like'] = True
+
+        return ret
 

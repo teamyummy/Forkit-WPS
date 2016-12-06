@@ -55,7 +55,7 @@ class RestaurantTag(models.Model):
 
 class RestaurantFavor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    restaurant = models.ForeignKey(Restaurant)
+    restaurant = models.ForeignKey(Restaurant, related_name='favors')
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
