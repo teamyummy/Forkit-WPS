@@ -12,20 +12,21 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework import filters
 from rest_framework.serializers import ValidationError
+from django.db.models import F
 from .perms import IsOwnerOrReadOnly
 from .pages import MyPagination
 
 
 class RestaurantList(generics.ListCreateAPIView):
-#    queryset = Restaurant.objects.all()
+    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = (IsOwnerOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', 'address', 'tags__name')
     pagination_class = MyPagination
 
-    def get_queryset(self):
-        Restaurant.objects.order_by((F('review_score')/F('review_count')).desc())
+#    def get_queryset(self):
+#        Restaurant.objects.order_by((F('review_score')/F('review_count')).desc())
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
