@@ -18,15 +18,15 @@ from .pages import MyPagination
 
 
 class RestaurantList(generics.ListCreateAPIView):
-#    queryset = Restaurant.objects.all()
+    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = (IsOwnerOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', 'address', 'tags__name')
     pagination_class = MyPagination
 
-    def get_queryset(self):
-        return Restaurant.objects.order_by((F('review_score')/F('review_count')).desc())
+#    def get_queryset(self):
+#        return Restaurant.objects.order_by((F('review_score')/F('review_count')).desc())
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
