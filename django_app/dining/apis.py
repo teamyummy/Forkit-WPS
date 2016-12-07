@@ -13,6 +13,7 @@ from rest_framework import generics
 from rest_framework import filters
 from rest_framework.serializers import ValidationError
 from .perms import IsOwnerOrReadOnly
+from .pages import MyPagination
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -21,6 +22,7 @@ class RestaurantList(generics.ListCreateAPIView):
     permission_classes = (IsOwnerOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', 'address', 'tags__name')
+    pagination_class = MyPagination
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
