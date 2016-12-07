@@ -25,6 +25,8 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['-pk']
 
 class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='menus')
@@ -32,6 +34,9 @@ class Menu(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     img = VersatileImageField('Image', upload_to='menu_imgs')
+
+    class Meta:
+        ordering = ['pk']
 
 
 class Review(models.Model):
@@ -44,6 +49,9 @@ class Review(models.Model):
     dislike = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-pk']
+
 
 class RestaurantTag(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='tags')
@@ -51,6 +59,7 @@ class RestaurantTag(models.Model):
 
     class Meta:
         unique_together = ("restaurant", "name")
+        ordering = ['restaurant', 'name']
 
 
 class RestaurantFavor(models.Model):
@@ -60,12 +69,16 @@ class RestaurantFavor(models.Model):
 
     class Meta:
         unique_together = ("user", "restaurant")
+        ordering = ['pk']
 
 
 class RestaurantImg(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='images')
     img = VersatileImageField('RestaurantImage', upload_to='restaurant_imgs')
     alt = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['pk']
 
 
 class ReviewLike(models.Model):
@@ -74,10 +87,15 @@ class ReviewLike(models.Model):
     up_and_down = models.IntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        ordering = ['pk']
+
 
 class ReviewImg(models.Model):
     review = models.ForeignKey(Review, related_name='images')
     img = VersatileImageField('ReviewImage', upload_to='review_imgs')
     alt = models.CharField(max_length=100)
 
+    class Meta:
+        ordering = ['pk']
 
