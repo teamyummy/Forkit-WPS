@@ -145,7 +145,7 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
         self.restaurant.review_score -= instance.score
 
         instance.delete()
-        self.review.save()
+        self.restaurant.save()
     
 
 class TagList(generics.ListCreateAPIView):
