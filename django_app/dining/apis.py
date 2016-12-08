@@ -23,7 +23,7 @@ class RestaurantList(generics.ListCreateAPIView):
     permission_classes = (IsOwnerOrReadOnly, )
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name', 'address', 'tags__name')
-    ordering_fields = ('pk', 'review_count', 'review_average')
+    ordering_fields = ('pk', 'review_count', 'review_average', 'total_like')
     pagination_class = MyPagination
 
 #    def get_queryset(self):
