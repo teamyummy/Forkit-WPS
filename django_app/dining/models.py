@@ -20,11 +20,19 @@ class Restaurant(models.Model):
     review_count = models.IntegerField(default=0, db_index=True)
     review_score = models.IntegerField(default=0)
     review_average = models.FloatField(default=0, db_index=True)
-    total_like = models.IntegerField(default=0)
+    total_like = models.IntegerField(default=0, db_index=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.review_count == 0:
+            self.review_average = 0
+        else:
+            self.review_average = self.review_score / self.review_count
+
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-pk']
@@ -35,6 +43,9 @@ class Menu(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     img = VersatileImageField('Image', upload_to='menu_imgs')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ['pk']
