@@ -121,7 +121,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
     register = serializers.ReadOnlyField(source='register.username')
 #    menus = serializers.PrimaryKeyRelatedField(
 #                    many=True, queryset=Menu.objects.all())
-    menus = MenuSerializer(many=True, read_only=True)
+#    menus = MenuSerializer(many=True, read_only=True)
+    menus = serializers.SerializerMethodField()
     images = RestaurantImgSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
@@ -136,6 +137,12 @@ class RestaurantSerializer(serializers.ModelSerializer):
                   'review_count', 'review_score', 'review_average',
                   'total_like', 'created_date',
                   'menus', 'images', 'reviews', 'tags')
+
+    def get_menus(self, obj):
+#        q = obj.menus.all()[:3]
+        q = obj.menus.all()
+        s = MenuSerializer(q, many=True)
+        return s.data
 
     def to_representation(self, obj):
         ret = super().to_representation(obj)
