@@ -133,7 +133,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
                   'latitude', 'longitude', 'description',
                   'can_parking', 'desc_parking', 'desc_delivery',
                   'operation_hour',
-                  'review_count', 'review_score',
+                  'review_count', 'review_score', 'review_average',
                   'total_like', 'created_date',
                   'menus', 'images', 'reviews', 'tags')
 

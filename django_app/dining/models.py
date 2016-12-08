@@ -17,7 +17,7 @@ class Restaurant(models.Model):
     desc_delivery = models.CharField(max_length=100, blank=True)
     operation_hour = models.CharField(max_length=100, blank=True)
 
-    review_count = models.IntegerField(default=0)
+    review_count = models.IntegerField(default=0, db_index=True)
     review_score = models.IntegerField(default=0)
     review_average = models.FloatField(default=0, db_index=True)
     total_like = models.IntegerField(default=0)

@@ -21,8 +21,9 @@ class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = (IsOwnerOrReadOnly, )
-    filter_backends = (filters.SearchFilter, )
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name', 'address', 'tags__name')
+    ordering_fields = ('pk', 'review_count', 'review_average')
     pagination_class = MyPagination
 
 #    def get_queryset(self):
