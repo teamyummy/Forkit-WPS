@@ -69,6 +69,9 @@ class RestaurantTag(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='tags')
     name = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         unique_together = ("restaurant", "name")
         ordering = ['restaurant', 'name']
