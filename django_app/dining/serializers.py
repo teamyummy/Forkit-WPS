@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from .models import Restaurant, Menu, Review
@@ -68,6 +69,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'author', 'restaurant', 'title', 'content',
                   'score', 'like', 'dislike', 'created_date', 'images')
+
+    def to_representation(self, obj):
+        ret = super().to_representation(obj)
+
+        request = self.context.get('request', None)
+        ret['my_like'] = 0
+        if request is not None:
+            if request.user.is_authenticated:
+                try:
+                    my_like = obj.likes.get(user=request.user)
+                    ret['my_like'] = my_like.up_and_down
+                except ObjectDoesNotExist:
+                    pass
+
+        return ret
 
 
 class TagSerializer(serializers.ModelSerializer):
