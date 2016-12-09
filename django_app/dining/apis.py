@@ -15,6 +15,7 @@ from rest_framework.serializers import ValidationError
 from django.db.models import F
 from .perms import IsOwnerOrReadOnly
 from .pages import MyPagination
+#from .fils import TagFilter
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -28,6 +29,14 @@ class RestaurantList(generics.ListCreateAPIView):
 
 #    def get_queryset(self):
 #        return Restaurant.objects.order_by((F('review_score')/F('review_count')).desc())
+    def get_queryset(self):
+        tag_str = self.request.query_params.get('tags', None)
+        if tag_str is None:
+            return Restaurant.objects.all()
+
+        #tags = ['식당', '두부']
+        tags = tag_str.split(',')
+        return Restaurant.objects.filter(tags__name__in=tags).distinct()
 
     def perform_create(self, serializer):
         serializer.save(register=self.request.user)
