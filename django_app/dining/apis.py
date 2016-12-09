@@ -48,7 +48,27 @@ class RestaurantDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsOwnerOrReadOnly, )
 
 
-class MenuList(generics.ListCreateAPIView):
+class CreateRestPermMixin(object):
+    def create(self, request, *args, **kwargs):
+        rest_id = self.kwargs['rest_id']
+        obj = get_object_or_404(Restaurant, pk=rest_id)
+        self.check_object_permissions(request, obj)
+        self.restaurant = obj
+
+        return super().create(request, *args, **kwargs)
+
+
+class CreateReviewPermMixin(object):
+    def create(self, request, *args, **kwargs):
+        review_id = self.kwargs['review_id']
+        obj = get_object_or_404(Review, pk=review_id)
+        self.check_object_permissions(request, obj)
+        self.review = obj
+
+        return super().create(request, *args, **kwargs)
+
+
+class MenuList(CreateRestPermMixin, generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     permission_classes = (IsOwnerOrReadOnly, )
@@ -59,9 +79,7 @@ class MenuList(generics.ListCreateAPIView):
         return Menu.objects.filter(restaurant=restaurant)
 
     def perform_create(self, serializer):
-        rest_id = self.kwargs['rest_id']
-        restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        serializer.save(restaurant=restaurant)
+        serializer.save(restaurant=self.restaurant)
 
 #    def list(self, request, *args, **kwargs):
 #        pk = kwargs['pk']
@@ -81,7 +99,7 @@ class MenuDetail(generics.RetrieveUpdateDestroyAPIView):
         return Menu.objects.filter(restaurant=restaurant)
 
 
-class RestaurantImgList(generics.ListCreateAPIView):
+class RestaurantImgList(CreateRestPermMixin, generics.ListCreateAPIView):
     queryset = RestaurantImg.objects.all()
     serializer_class = RestaurantImgSerializer
     permission_classes = (IsOwnerOrReadOnly, )
@@ -92,9 +110,7 @@ class RestaurantImgList(generics.ListCreateAPIView):
         return RestaurantImg.objects.filter(restaurant=restaurant)
 
     def perform_create(self, serializer):
-        rest_id = self.kwargs['rest_id']
-        restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        serializer.save(restaurant=restaurant)
+        serializer.save(restaurant=self.restaurant)
 
 
 class RestaurantImgDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -159,7 +175,7 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
         self.restaurant.save()
     
 
-class TagList(generics.ListCreateAPIView):
+class TagList(CreateRestPermMixin, generics.ListCreateAPIView):
     queryset = RestaurantTag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsOwnerOrReadOnly, )
@@ -170,9 +186,7 @@ class TagList(generics.ListCreateAPIView):
         return RestaurantTag.objects.filter(restaurant=restaurant)
 
     def perform_create(self, serializer):
-        rest_id = self.kwargs['rest_id']
-        restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        serializer.save(restaurant=restaurant)
+        serializer.save(restaurant=self.restaurant)
 
 
 class TagDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -221,7 +235,7 @@ class FavorDetail(generics.RetrieveDestroyAPIView):
         self.restaurant.save()
 
 
-class ReviewImgList(generics.ListCreateAPIView):
+class ReviewImgList(CreateReviewPermMixin, generics.ListCreateAPIView):
     queryset = ReviewImg.objects.all()
     serializer_class = ReviewImgSerializer
     permission_classes = (IsOwnerOrReadOnly, )
@@ -232,9 +246,7 @@ class ReviewImgList(generics.ListCreateAPIView):
         return ReviewImg.objects.filter(review=review)
 
     def perform_create(self, serializer):
-        review_id = self.kwargs['review_id']
-        review = get_object_or_404(Review, pk=review_id)
-        serializer.save(review=review)
+        serializer.save(review=self.review)
     
 
 class ReviewImgDetail(generics.RetrieveUpdateDestroyAPIView):
