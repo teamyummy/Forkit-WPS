@@ -75,11 +75,13 @@ class ReviewSerializer(serializers.ModelSerializer):
 
         request = self.context.get('request', None)
         ret['my_like'] = 0
+        ret['my_like_id'] = 0
         if request is not None:
             if request.user.is_authenticated:
                 try:
                     my_like = obj.likes.get(user=request.user)
                     ret['my_like'] = my_like.up_and_down
+                    ret['my_like_id'] = my_like.pk
                 except ObjectDoesNotExist:
                     pass
 
@@ -166,10 +168,15 @@ class RestaurantSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
 
         ret['my_like'] = False
+        ret['my_like_id'] = 0
         if request is not None:
             if request.user.is_authenticated:
-                if obj.favors.filter(user=request.user).exists():
+                try:
+                    my_like = obj.favors.get(user=request.user)
                     ret['my_like'] = True
+                    ret['my_like_id'] = my_like.pk
+                except ObjectDoesNotExist:
+                    pass
 
         return ret
 
