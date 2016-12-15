@@ -62,12 +62,13 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')
+    rest_id = serializers.ReadOnlyField(source='restaurant.id')
     restaurant = serializers.ReadOnlyField(source='restaurant.name')
     images = ReviewImgSerializer(many=True, read_only=True)
 
     class Meta:
         model = Review
-        fields = ('id', 'author', 'restaurant', 'title', 'content',
+        fields = ('id', 'author', 'rest_id', 'restaurant', 'title', 'content',
                   'score', 'like', 'dislike', 'created_date', 'images')
 
     def to_representation(self, obj):
