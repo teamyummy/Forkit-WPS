@@ -71,6 +71,23 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ('id', 'author', 'rest_id', 'restaurant', 'title', 'content',
                   'score', 'like', 'dislike', 'created_date', 'images')
 
+    def create(self, validated_data):
+        imgs = validated_data.pop('imgs')
+        alts = validated_data.pop('alts')
+
+        ris_list = []
+        for img, alt in zip(imgs, alts):
+            dict = { 'img':img, 'alt':alt }
+            ris = ReviewImgSerializer(data=dict)
+            ris.is_valid(raise_exception=True)
+            ris_list.append(ris)
+
+        ins = super().create(validated_data)
+        for ris in ris_list:
+            ris.save(review=ins)
+
+        return ins
+
     def to_representation(self, obj):
         ret = super().to_representation(obj)
 

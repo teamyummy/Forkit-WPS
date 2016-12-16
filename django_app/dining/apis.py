@@ -137,7 +137,10 @@ class ReviewList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         rest_id = self.kwargs['rest_id']
         restaurant = get_object_or_404(Restaurant, pk=rest_id)
-        review = serializer.save(author=self.request.user, restaurant=restaurant)
+        review = serializer.save(author=self.request.user, restaurant=restaurant,
+                                imgs=self.request.data.getlist('imgs'),
+                                alts=self.request.data.getlist('alts'))
+
         restaurant.review_count += 1
         restaurant.review_score += review.score
         restaurant.save()
