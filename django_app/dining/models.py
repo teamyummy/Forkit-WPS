@@ -1,6 +1,16 @@
 from django.db import models
 from django.conf import settings
 from versatileimagefield.fields import VersatileImageField
+import os
+from uuid import uuid4
+
+
+def file_path(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        return os.path.join(path, filename)
+    return wrapper
 
 
 class Restaurant(models.Model):
@@ -42,7 +52,7 @@ class Menu(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     description = models.TextField()
-    img = VersatileImageField('Image', upload_to='menu_imgs')
+    img = VersatileImageField('Image', upload_to=file_path('menu_imgs'))
 
     def __str__(self):
         return self.name
@@ -89,7 +99,8 @@ class RestaurantFavor(models.Model):
 
 class RestaurantImg(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='images')
-    img = VersatileImageField('RestaurantImage', upload_to='restaurant_imgs')
+    img = VersatileImageField('RestaurantImage',
+                                upload_to=file_path('restaurant_imgs'))
     alt = models.CharField(max_length=100)
 
     class Meta:
@@ -108,7 +119,7 @@ class ReviewLike(models.Model):
 
 class ReviewImg(models.Model):
     review = models.ForeignKey(Review, related_name='images')
-    img = VersatileImageField('ReviewImage', upload_to='review_imgs')
+    img = VersatileImageField('ReviewImage', upload_to=file_path('review_imgs'))
     alt = models.CharField(max_length=100)
 
     class Meta:
